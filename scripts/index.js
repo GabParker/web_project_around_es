@@ -54,26 +54,26 @@ document.addEventListener("DOMContentLoaded", function () {
   const closeButtons = document.querySelectorAll(".popup__close");
 
   function openModal(popup) {
-    popup.classList.add("popup_opened");
+    popup.classList.add("popup_is-opened");
   }
 
   function closeModal(popup) {
-    popup.classList.remove("popup_opened");
+    popup.classList.remove("popup_is-opened");
   }
 
   // ===== EDIT PROFILE =====
-  editButton.addEventListener("click", function () {
-    // llenar inputs al abrir
+  function fillProfileForm() {
     nameInput.value = profileName.textContent;
     jobInput.value = profileJob.textContent;
+  }
+  editButton.addEventListener("click", function () {
+    fillProfileForm();
     openModal(editPopup);
   });
 
   // 🔥 SUBMIT (con alert para verificar)
   editForm.addEventListener("submit", function (evt) {
     evt.preventDefault();
-
-    alert("SUBMIT OK"); // 👈 verificación
 
     profileName.textContent = nameInput.value;
     profileJob.textContent = jobInput.value;
