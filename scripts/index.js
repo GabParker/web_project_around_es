@@ -61,17 +61,16 @@ document.addEventListener("DOMContentLoaded", function () {
     popup.classList.remove("popup_is-opened");
   }
 
-  // ===== EDIT PROFILE =====
   function fillProfileForm() {
     nameInput.value = profileName.textContent;
     jobInput.value = profileJob.textContent;
   }
+
   editButton.addEventListener("click", function () {
     fillProfileForm();
     openModal(editPopup);
   });
 
-  // 🔥 SUBMIT (con alert para verificar)
   editForm.addEventListener("submit", function (evt) {
     evt.preventDefault();
 
@@ -81,27 +80,29 @@ document.addEventListener("DOMContentLoaded", function () {
     closeModal(editPopup);
   });
 
-  // ===== CARDS =====
-  function createCard(data) {
+  function getCardElement(
+    name = "Sin título",
+    link = "./images/placeholder.jpg",
+  ) {
     const template = document
       .querySelector("#card-template")
       .content.querySelector(".card");
 
-    const card = template.cloneNode(true);
+    const cardElement = template.cloneNode(true);
 
-    const img = card.querySelector(".card__image");
-    const title = card.querySelector(".card__title");
-    const like = card.querySelector(".card__like-button");
-    const del = card.querySelector(".card__delete-button");
+    const cardTitle = cardElement.querySelector(".card__title");
+    const cardImage = cardElement.querySelector(".card__image");
+    const like = cardElement.querySelector(".card__like-button");
+    const del = cardElement.querySelector(".card__delete-button");
 
-    img.src = data.link;
-    img.alt = data.name;
-    title.textContent = data.name;
+    cardTitle.textContent = name;
+    cardImage.src = link;
+    cardImage.alt = name;
 
-    img.addEventListener("click", () => {
-      popupImage.src = data.link;
-      popupImage.alt = data.name;
-      popupCaption.textContent = data.name;
+    cardImage.addEventListener("click", () => {
+      popupImage.src = link;
+      popupImage.alt = name;
+      popupCaption.textContent = name;
       openModal(imagePopup);
     });
 
@@ -110,37 +111,36 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
     del.addEventListener("click", () => {
-      card.remove();
+      cardElement.remove();
     });
 
-    return card;
+    return cardElement;
   }
 
-  // render inicial
+  function renderCard(name, link, container) {
+    const cardElement = getCardElement(name, link);
+    container.prepend(cardElement);
+  }
+
   initialCards.forEach((item) => {
-    cardsContainer.append(createCard(item));
+    renderCard(item.name, item.link, cardsContainer);
   });
 
-  // ===== NUEVA CARD =====
   addButton.addEventListener("click", () => {
     openModal(newCardPopup);
   });
 
-  newCardForm.addEventListener("submit", function (evt) {
+  function handleCardFormSubmit(evt) {
     evt.preventDefault();
 
-    const card = createCard({
-      name: inputTitle.value,
-      link: inputLink.value,
-    });
-
-    cardsContainer.prepend(card);
+    renderCard(inputTitle.value, inputLink.value, cardsContainer);
 
     newCardForm.reset();
     closeModal(newCardPopup);
-  });
+  }
 
-  // ===== CERRAR POPUPS =====
+  newCardForm.addEventListener("submit", handleCardFormSubmit);
+
   closeButtons.forEach((btn) => {
     btn.addEventListener("click", () => {
       closeModal(btn.closest(".popup"));
